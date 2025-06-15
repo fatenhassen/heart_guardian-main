@@ -10,16 +10,20 @@ class BlogsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return FutureBuilder<List<Article>>(
       future: ArticleService.fetchArticles(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Padding(
-            padding: EdgeInsets.all(32.0),
+          return Padding(
+            padding: const EdgeInsets.all(32.0),
             child: Center(
               child: CircularProgressIndicator(
-                color: Color(0xFF6BAED6),
+                color:
+                    isDark
+                        ? const Color.fromARGB(255, 255, 255, 255)
+                        : const Color(0xFF6BAED6),
                 strokeWidth: 4.0,
               ),
             ),

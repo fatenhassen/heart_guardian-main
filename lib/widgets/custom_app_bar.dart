@@ -3,7 +3,7 @@ import 'package:heart_guardian/screen/notification_screen.dart';
 import 'package:heart_guardian/screen/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:heart_guardian/core/theme_notifier.dart';
-import 'package:easy_localization/easy_localization.dart'; // ✅ دعم الترجمة
+import 'package:easy_localization/easy_localization.dart'; 
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       title: Row(
         children: [
-          /// صورة البروفايل
+          
           CircleAvatar(
             radius: 24,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -26,7 +26,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           const Spacer(),
 
-          /// أيقونات الإشعارات والإعدادات وتغيير الوضع
           Row(
             children: [
               Tooltip(
