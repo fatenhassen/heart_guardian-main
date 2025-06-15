@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:heart_guardian/widgets/NewPasswordScreen.dart';
+
+import 'package:heart_guardian/widgets/forget_password.dart';
 
 class VerifyCodeScreen extends StatefulWidget {
   const VerifyCodeScreen({super.key});
@@ -20,7 +21,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     if (enteredCode.length == 4) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const NewPasswordScreen()),
+        MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -45,7 +46,11 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
         maxLength: 1,
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
-        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          fontFamily: 'Agbalumo',
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
         decoration: const InputDecoration(
           counterText: '',
           filled: true,
@@ -85,18 +90,18 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 25),
             const Text(
               'Enter the 4-digit code sent to your email',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 21,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF042D46),
-                fontFamily: 'Poppins',
+                color: Color(0xFF656363),
+                fontFamily: 'Agbalumo',
               ),
             ),
             const SizedBox(height: 30),
@@ -104,25 +109,26 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(4, _buildCodeField),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 45),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _verifyCode,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFA0D1EF),
+                  backgroundColor: Color(0xFF042D46),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  elevation: 9,
                 ),
                 child: const Text(
                   'Verify',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontFamily: 'Poppins',
+                    fontFamily: 'Agbalumo',
                   ),
                 ),
               ),
