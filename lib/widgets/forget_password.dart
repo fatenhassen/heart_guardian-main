@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:heart_guardian/widgets/VerifyCodeScreen.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
@@ -51,13 +52,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                   filled: true,
                   fillColor: Color(0xFF042D46),
                   hintStyle: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
-                  contentPadding: const EdgeInsets.only(
-                    left: 11,
-                  ), // ⇦ تضيف مسافة بعد الأيقونة
+                  contentPadding: const EdgeInsets.only(left: 31),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -68,31 +67,40 @@ class ForgotPasswordScreen extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-
               const SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFA0D1EF),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 120,
-                    vertical: 15,
-                  ),
-                ),
-                onPressed: () {
-                  // TODO: Implement reset password logic
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Reset link has been sent to your email"),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFA0D1EF),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  );
-                },
-                child: const Text(
-                  'Send Reset Link',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    fontFamily: 'Poppins',
-                    color: Colors.white,
+                  ),
+                 onPressed: () {
+  // ممكن تضيفي هنا إرسال حقيقي لو عندك باك اند
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const VerifyCodeScreen()),
+  );
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text("Reset link has been sent to your email"),
+    ),
+  );
+},
+
+                  child: const Text(
+                    'Send Reset Link',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontFamily: 'Poppins',
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

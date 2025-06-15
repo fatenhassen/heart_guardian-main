@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-import 'package:heart_guardian/widgets/forgot_password.dart';
+import 'package:heart_guardian/widgets/forget_password.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_view.dart';
