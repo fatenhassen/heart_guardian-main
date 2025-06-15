@@ -35,7 +35,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
       const SnackBar(content: Text('Password has been reset successfully')),
     );
 
-    // رجوع للشاشة الرئيسية مثلاً
     Navigator.popUntil(context, (route) => route.isFirst);
   }
 
@@ -80,13 +79,13 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
               decoration: InputDecoration(
                 labelText: 'New Password',
                 filled: true,
-                fillColor: const Color(0xFF042D46),
-                labelStyle: const TextStyle(color: Colors.white),
+                fillColor: const Color.fromARGB(255, 255, 255, 255),
+                labelStyle: const TextStyle(color: Color(0xFF042D46)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Color(0xFF042D46)),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -95,13 +94,13 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
               decoration: InputDecoration(
                 labelText: 'Confirm Password',
                 filled: true,
-                fillColor: const Color(0xFF042D46),
-                labelStyle: const TextStyle(color: Colors.white),
+                fillColor: const Color.fromARGB(255, 255, 255, 255),
+                labelStyle: const TextStyle(color: Color(0xFF042D46)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Color(0xFF042D46)),
             ),
             const SizedBox(height: 40),
             SizedBox(
@@ -109,7 +108,7 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
               child: ElevatedButton(
                 onPressed: _submitNewPassword,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFA0D1EF),
+                  backgroundColor: const Color.fromARGB(255, 159, 211, 243),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),

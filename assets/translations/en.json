@@ -54,7 +54,31 @@
   "app_title": "Guardians Hearts",
   "oxygen_percentage": "Oxygen\nPercentage",
   "heartbeats": "Heartbeats",
-  "blogs": "Blogs"
+  "blogs": "Blogs",
+   "welcome_back": "Welcome Back",
+  "sign_in": "Sign In",
+  
+  "login_social_media": "Login with Social Media",
+  "google_login_failed": "Failed to sign in with Google",
+  "create_account": "Create Account",
+  
+  "email_or_phone": "Phone or Email",
+  
+  "confirm_password": "Confirm Password",
+  "sign_up": "SIGN UP",
+  "already_have_account": "Already have an account? Sign in",
+  "passwords_not_match": "Passwords do not match",
+  "account_created": "Account created successfully.",
+  "signup_failed": "Signup failed",
+  "something_wrong": "Something went wrong. Try again later.",
+  "welcome_text": "Hello\nSign in!",
+  
+  "forgot_password": "Forgot password?",
+  
+  "dont_have_account": "Don't have an account? Sign up",
+  "login_success": "You have logged in successfully.",
+  "login_failed": "Login failed",
+  "error_connecting": "Error connecting to server"
   
 
 

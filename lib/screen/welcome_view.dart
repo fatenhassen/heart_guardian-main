@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:heart_guardian/screen/login_view.dart';
 import 'package:heart_guardian/screen/signup_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
- 
 import 'package:heart_guardian/services/google_auth_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -25,11 +25,11 @@ class WelcomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "Welcome Back",
-                  style: TextStyle(
+                  tr("welcome_back"),
+                  style: const TextStyle(
                     fontSize: 28,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -39,24 +39,24 @@ class WelcomePage extends StatelessWidget {
               const SizedBox(height: 50),
               _buildButton(
                 context,
-                "SIGN IN",
-                LoginView(),
+                tr("sign_in"),
+                const LoginView(),
                 width: screenWidth * 0.9,
               ),
               const SizedBox(height: 20),
               _buildButton(
                 context,
-                "SIGN UP",
-                SignUpView(),
+                tr("sign_up"),
+                const SignUpView(),
                 isFilled: true,
-                textColor: Color(0xFF042D46),
+                textColor: const Color(0xFF042D46),
                 backgroundColor: Colors.white,
                 width: screenWidth * 0.9,
               ),
               const SizedBox(height: 60),
-              const Text(
-                "Login with Social Media",
-                style: TextStyle(
+              Text(
+                tr("login_social_media"),
+                style: const TextStyle(
                   fontSize: 16,
                   color: Color(0xFF848383),
                   fontFamily: 'Agbalumo',
@@ -91,13 +91,13 @@ class WelcomePage extends StatelessWidget {
                       if (userCredential != null) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => LoginView()),
+                          MaterialPageRoute(
+                            builder: (context) => const LoginView(),
+                          ),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('فشل تسجيل الدخول باستخدام Google'),
-                          ),
+                          SnackBar(content: Text(tr("google_login_failed"))),
                         );
                       }
                     },

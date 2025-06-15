@@ -18,7 +18,6 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     String enteredCode = _controllers.map((c) => c.text).join();
 
     if (enteredCode.length == 4) {
-      
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const NewPasswordScreen()),
@@ -50,7 +49,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
         decoration: const InputDecoration(
           counterText: '',
           filled: true,
-          fillColor: Color(0xFF042D46),
+          fillColor: Colors.white,
           hintStyle: TextStyle(color: Colors.white),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),

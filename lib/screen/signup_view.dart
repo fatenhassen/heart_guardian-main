@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:heart_guardian/screen/home_view.dart';
-import 'package:heart_guardian/screen/profile_screen.dart';
 import 'package:http/http.dart' as http;
+import 'package:easy_localization/easy_localization.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -30,7 +30,7 @@ class _SignUpViewState extends State<SignUpView> {
     final String confirmPassword = _confirmPasswordController.text.trim();
 
     if (password != confirmPassword) {
-      _showCustomDialog("Passwords do not match", false);
+      _showCustomDialog(tr("passwords_not_match"), false);
       return;
     }
 
@@ -51,12 +51,12 @@ class _SignUpViewState extends State<SignUpView> {
 
       if (response.statusCode == 200) {
         int userId = data['user_id'];
-        _showCustomDialog("Account created successfully.", true, userId);
+        _showCustomDialog(tr("account_created"), true, userId);
       } else {
-        _showCustomDialog(data['message'] ?? "Signup failed", false);
+        _showCustomDialog(data['message'] ?? tr("signup_failed"), false);
       }
     } catch (e) {
-      _showCustomDialog("Something went wrong. Try again later.", false);
+      _showCustomDialog(tr("something_wrong"), false);
     }
   }
 
@@ -93,8 +93,8 @@ class _SignUpViewState extends State<SignUpView> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.check_circle,
+                    Icon(
+                      success ? Icons.check_circle : Icons.error,
                       color: Colors.white,
                       size: 60,
                     ),
@@ -136,9 +136,9 @@ class _SignUpViewState extends State<SignUpView> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  const Text(
-                    "Account",
-                    style: TextStyle(
+                  Text(
+                    tr("create_account"),
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -165,7 +165,7 @@ class _SignUpViewState extends State<SignUpView> {
                           TextFormField(
                             controller: _fullNameController,
                             decoration: InputDecoration(
-                              labelText: "Full Name",
+                              labelText: tr("full_name"),
                               prefixIcon: const Icon(Icons.person),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -176,7 +176,7 @@ class _SignUpViewState extends State<SignUpView> {
                           TextFormField(
                             controller: _emailController,
                             decoration: InputDecoration(
-                              labelText: "Phone Or Gmail",
+                              labelText: tr("email_or_phone"),
                               prefixIcon: const Icon(Icons.email),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -188,7 +188,7 @@ class _SignUpViewState extends State<SignUpView> {
                             controller: _passwordController,
                             obscureText: _obscurePassword,
                             decoration: InputDecoration(
-                              labelText: "Password",
+                              labelText: tr("password"),
                               prefixIcon: const Icon(Icons.lock),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -212,7 +212,7 @@ class _SignUpViewState extends State<SignUpView> {
                             controller: _confirmPasswordController,
                             obscureText: _obscureConfirmPassword,
                             decoration: InputDecoration(
-                              labelText: "Confirm Password",
+                              labelText: tr("confirm_password"),
                               prefixIcon: const Icon(Icons.lock),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -252,9 +252,9 @@ class _SignUpViewState extends State<SignUpView> {
                                   vertical: 15,
                                 ),
                               ),
-                              child: const Text(
-                                "SIGN UP",
-                                style: TextStyle(
+                              child: Text(
+                                tr("sign_up"),
+                                style: const TextStyle(
                                   fontSize: 18,
                                   color: Colors.white,
                                 ),
@@ -266,9 +266,9 @@ class _SignUpViewState extends State<SignUpView> {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text(
-                              "Already have an account? Sign in",
-                              style: TextStyle(
+                            child: Text(
+                              tr("already_have_account"),
+                              style: const TextStyle(
                                 color: Color(0xFF848383),
                                 fontWeight: FontWeight.bold,
                               ),

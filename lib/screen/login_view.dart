@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-
 import 'package:heart_guardian/widgets/forget_password.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 import 'home_view.dart';
 import 'signup_view.dart';
 
@@ -38,6 +39,8 @@ class _LoginViewState extends State<LoginView> {
         final int userId = responseData['user_id'];
         await prefs.setInt('user_id', userId);
 
+        if (!mounted) return;
+
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -63,17 +66,17 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Icon(
+                        children: [
+                          const Icon(
                             Icons.check_circle,
                             color: Colors.white,
                             size: 60,
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           Text(
-                            'You have logged in successfully.',
+                            tr("login_success"),
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 20,
                               color: Color(0xFF042D46),
                               fontWeight: FontWeight.bold,
@@ -90,31 +93,39 @@ class _LoginViewState extends State<LoginView> {
 
         await Future.delayed(const Duration(seconds: 2));
         if (!mounted) return;
-
         Navigator.of(context)
           ..pop()
           ..pushReplacement(
             MaterialPageRoute(builder: (context) => HomeView(userId: userId)),
           );
       } else {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(responseData['message'] ?? 'Login failed')),
+          SnackBar(
+            content: Text(responseData['message'] ?? tr("login_failed")),
+          ),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error connecting to server')),
-      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(tr("error_connecting"))));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFA0D1EF), Color(0xFFFFFFFF)],
+            colors:
+                isDark
+                    ? [Colors.black87, Colors.black]
+                    : [const Color(0xFFA0D1EF), const Color(0xFFFFFFFF)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -125,20 +136,20 @@ class _LoginViewState extends State<LoginView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Hello\nSign in!",
+                Text(
+                  tr("welcome_text"),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.white,
                   ),
                 ),
                 const SizedBox(height: 30),
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? Colors.grey[900] : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: const [
                       BoxShadow(
@@ -152,10 +163,10 @@ class _LoginViewState extends State<LoginView> {
                     children: [
                       TextField(
                         controller: emailController,
-                        decoration: const InputDecoration(
-                          labelText: "Gmail",
-                          prefixIcon: Icon(Icons.email),
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: tr("email"),
+                          prefixIcon: const Icon(Icons.email),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -163,7 +174,7 @@ class _LoginViewState extends State<LoginView> {
                         controller: passwordController,
                         obscureText: _isObscured,
                         decoration: InputDecoration(
-                          labelText: "Password",
+                          labelText: tr("password"),
                           prefixIcon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -193,16 +204,15 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             );
                           },
-                          child: const Text(
-                            "Forgot password?",
-                            style: TextStyle(
+                          child: Text(
+                            tr("forgot_password"),
+                            style: const TextStyle(
                               color: Color(0xFF000000),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
                       Container(
                         width: double.infinity,
@@ -223,9 +233,12 @@ class _LoginViewState extends State<LoginView> {
                               borderRadius: BorderRadius.circular(25),
                             ),
                           ),
-                          child: const Text(
-                            "SIGN IN",
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          child: Text(
+                            tr("sign_in"),
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -237,12 +250,14 @@ class _LoginViewState extends State<LoginView> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SignUpView()),
+                      MaterialPageRoute(
+                        builder: (context) => const SignUpView(),
+                      ),
                     );
                   },
-                  child: const Text(
-                    "Don't have an account? Sign up",
-                    style: TextStyle(
+                  child: Text(
+                    tr("dont_have_account"),
+                    style: const TextStyle(
                       color: Color(0xFF848383),
                       fontWeight: FontWeight.bold,
                     ),
