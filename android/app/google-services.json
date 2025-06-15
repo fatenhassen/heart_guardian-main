@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "797865293026",
+    "firebase_url": "https://children-d0401-default-rtdb.firebaseio.com",
+    "project_id": "children-d0401",
+    "storage_bucket": "children-d0401.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797865293026:android:5224386cf569f9913e5abb",
+        "android_client_info": {
+          "package_name": "com.example.heart_guardian"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXZhLGgG9N8dxhIkEcJGuhd-paOoIFt8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
