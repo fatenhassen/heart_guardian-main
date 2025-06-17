@@ -59,7 +59,7 @@ class SettingsScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const ProfileScreen(),
+                          builder: (_) => const ProfileScreen(userId: '123',),
                         ),
                       );
                     },

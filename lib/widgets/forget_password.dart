@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:heart_guardian/widgets/VerifyCodeScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -13,7 +15,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
 
   Future<void> sendResetEmail(String email) async {
-    final url = Uri.parse('https://your-backend-url.com/forgot-password'); // ✅ غيّري الرابط حسب الـ API بتاعتك
+    final url = Uri.parse(
+      'https://web-production-6fe6.up.railway.app/api/v1/password/forgot',
+    );
 
     try {
       final response = await http.post(
@@ -22,19 +26,46 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         body: jsonEncode({'email': email}),
       );
 
+      if (!mounted) return;
+
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Reset link has been sent to your email")),
+          const SnackBar(
+            content: Text("Reset code has been sent to your email"),
+          ),
+        );
+
+        await openEmailApp(); // ✅ فتح الإيميل مباشرة بعد الإرسال
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const VerifyCodeScreen()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Failed to send reset link")),
+          const SnackBar(content: Text("Failed to send reset code")),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("An error occurred")),
-      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("An error occurred")));
+    }
+  }
+
+  Future<void> openEmailApp() async {
+    final Uri gmailUri = Uri.parse("googlegmail://");
+    final Uri mailtoUri = Uri(scheme: 'mailto');
+
+    if (await canLaunchUrl(gmailUri)) {
+      await launchUrl(gmailUri);
+    } else if (await canLaunchUrl(mailtoUri)) {
+      await launchUrl(mailtoUri);
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("No email app found")));
     }
   }
 
@@ -66,7 +97,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             children: [
               const SizedBox(height: 25),
               const Text(
-                'Enter your email address to receive a password reset link',
+                'Enter your email address to receive a password reset code',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Agbalumo',
@@ -130,7 +161,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       sendResetEmail(email);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Please enter your email")),
+                        const SnackBar(
+                          content: Text("Please enter your email"),
+                        ),
                       );
                     }
                   },
@@ -142,6 +175,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       fontSize: 22,
                       color: Colors.white,
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextButton.icon(
+                onPressed: openEmailApp,
+                icon: const Icon(Icons.mail_outline, color: Color(0xFF042D46)),
+                label: const Text(
+                  "Open Email App",
+                  style: TextStyle(
+                    color: Color(0xFF042D46),
+                    fontFamily: 'Agbalumo',
+                    fontSize: 18,
                   ),
                 ),
               ),

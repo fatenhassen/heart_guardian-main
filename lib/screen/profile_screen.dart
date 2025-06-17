@@ -1,22 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final String userId;
+
+  const ProfileScreen({super.key, required this.userId});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  TextEditingController fullNameController = TextEditingController(
-    text: 'Faten hassan ',
-  );
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController birthdateController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   bool isFullNameUpdated = false;
   bool _obscurePassword = true;
-  TextEditingController birthdateController = TextEditingController(
-    text: '20/03/2003',
-  );
+
+  @override
+  void initState() {
+    super.initState();
+    getUserProfile(); // ✅ جلب البيانات تلقائياً
+  }
+
+  Future<void> getUserProfile() async {
+    final url = Uri.parse(
+      'https://web-production-6fe6.up.railway.app/profile/${widget.userId}',
+    );
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          fullNameController.text = data['full_name'] ?? '';
+          birthdateController.text = data['birthdate'] ?? '';
+          emailController.text = data['email'] ?? '';
+          passwordController.text =
+              '**********'; // لا يتم جلب كلمة المرور فعلياً
+        });
+      } else {
+        print('فشل في جلب البيانات');
+      }
+    } catch (e) {
+      print('خطأ في جلب البيانات: $e');
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -24,30 +56,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
       initialDate: DateTime(2003, 7, 19),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: const Color(0xFF042D46),
+              onPrimary: Colors.white,
+              surface:
+                  isDark ? (Colors.grey[800] ?? Colors.grey) : Colors.white,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
+
     if (picked != null) {
-      setState(() {
-        birthdateController.text =
-            "${picked.day}/${picked.month}/${picked.year}";
-      });
+      final formattedDate = DateFormat(
+        'dd/MM/yyyy',
+        context.locale.toString(),
+      ).format(picked);
+      setState(() => birthdateController.text = formattedDate);
     }
   }
 
   void _updateFullName() {
-    if (fullNameController.text != ' Faten Hassan') {
-      setState(() {
-        isFullNameUpdated = true;
-      });
-    } else {
-      setState(() {
-        isFullNameUpdated = false;
-      });
-    }
+    setState(() {
+      isFullNameUpdated = fullNameController.text.isNotEmpty;
+    });
   }
 
-  void _updateProfile() async {
-    String fullName = fullNameController.text;
-    String _ = birthdateController.text;
+  Future<void> _updateProfile() async {
+    final fullName = fullNameController.text.trim();
+    final birthdate = birthdateController.text.trim();
+
     if (fullName.isEmpty) {
       ScaffoldMessenger.of(
         context,
@@ -55,17 +98,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
 
-    await Future.delayed(const Duration(seconds: 2));
-    bool isSaveSuccessful = true;
+    final url = Uri.parse(
+      'https://web-production-6fe6.up.railway.app/profile/${widget.userId}',
+    );
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'full_name': fullName, 'birthdate': birthdate}),
+      );
 
-    if (isSaveSuccessful) {
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('profile_updated_success'.tr())));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('profile_update_failed'.tr())));
+      }
+    } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('profile_updated_success'.tr())));
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('profile_update_failed'.tr())));
+      ).showSnackBar(SnackBar(content: Text('network_error'.tr())));
     }
   }
 
@@ -74,7 +129,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
-    final fillColor = isDark ? Colors.grey[800] : const Color(0xFFE0F2F7);
+    final fillColor =
+        isDark ? (Colors.grey[800] ?? Colors.grey) : const Color(0xFFE0F2F7);
     final bgColor = theme.scaffoldBackgroundColor;
 
     return Scaffold(
@@ -85,8 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         elevation: 0,
         centerTitle: false,
         iconTheme: IconThemeData(color: textColor),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 95, top: 10),
+        title: Center(
           child: Text(
             'my_profile'.tr(),
             style: TextStyle(
@@ -122,114 +177,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       backgroundColor: Colors.transparent,
                     ),
                   ),
-                  const Positioned(
+                  Positioned(
                     bottom: 0,
                     right: 0,
                     child: CircleAvatar(
-                      backgroundColor: Color(0xFFB3D9EF),
+                      backgroundColor:
+                          isDark ? Colors.blueGrey : const Color(0xFFB3D9EF),
                       radius: 20,
-                      child: Icon(Icons.camera_alt, color: Colors.white),
+                      child: const Icon(Icons.camera_alt, color: Colors.white),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 30.0),
-            Text(
-              'full_name'.tr(),
-              style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-            ),
-            const SizedBox(height: 10.0),
-            TextField(
+            const SizedBox(height: 30),
+            _buildLabeledField(
+              label: 'full_name'.tr(),
               controller: fullNameController,
+              hint: 'Alaa Elashmawi',
+              textColor: textColor,
+              fillColor: fillColor,
               onSubmitted: (_) => _updateFullName(),
-              style: TextStyle(color: textColor),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                hintText: 'Alaa Elashmawi',
-                hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
-                suffixIcon: Icon(
-                  Icons.check,
-                  color:
-                      isFullNameUpdated ? const Color(0XFF042D46) : Colors.grey,
-                ),
-                filled: true,
-                fillColor: fillColor,
+              suffixIcon: Icon(
+                Icons.check,
+                color:
+                    isFullNameUpdated ? const Color(0xFF042D46) : Colors.grey,
               ),
             ),
-            const SizedBox(height: 20.0),
-            Text(
-              'email'.tr(),
-              style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-            ),
-            const SizedBox(height: 10.0),
-            TextField(
-              style: TextStyle(color: textColor),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                hintText: 'alaa@gmail.com',
-                hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
-                filled: true,
-                fillColor: fillColor,
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            Text(
-              'password'.tr(),
-              style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-            ),
-            const SizedBox(height: 10.0),
-            TextField(
-              obscureText: _obscurePassword,
-              style: TextStyle(color: textColor),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                hintText: '**********',
-                hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                  ),
-                  onPressed:
-                      () =>
-                          setState(() => _obscurePassword = !_obscurePassword),
-                ),
-                filled: true,
-                fillColor: fillColor,
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            Text(
-              'birthdate'.tr(),
-              style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
-            ),
-            const SizedBox(height: 10.0),
-            TextField(
-              controller: birthdateController,
+            const SizedBox(height: 20),
+            _buildLabeledField(
+              label: 'email'.tr(),
+              controller: emailController,
+              hint: 'alaa@gmail.com',
+              textColor: textColor,
+              fillColor: fillColor,
               readOnly: true,
-              style: TextStyle(color: textColor),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                hintText: '19/07/2003',
-                hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.arrow_drop_down),
-                  onPressed: () => _selectDate(context),
-                ),
-                filled: true,
-                fillColor: fillColor,
-              ),
-              onTap: () => _selectDate(context),
             ),
-            const SizedBox(height: 40.0),
+            const SizedBox(height: 20),
+            _buildLabeledField(
+              label: 'password'.tr(),
+              controller: passwordController,
+              hint: '**********',
+              textColor: textColor,
+              fillColor: fillColor,
+              obscureText: _obscurePassword,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                ),
+                onPressed:
+                    () => setState(() => _obscurePassword = !_obscurePassword),
+              ),
+            ),
+            const SizedBox(height: 20),
+            _buildLabeledField(
+              label: 'birthdate'.tr(),
+              controller: birthdateController,
+              hint: '19/07/2003',
+              textColor: textColor,
+              fillColor: fillColor,
+              readOnly: true,
+              onTap: () => _selectDate(context),
+              suffixIcon: const Icon(Icons.arrow_drop_down),
+            ),
+            const SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -250,6 +261,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLabeledField({
+    required String label,
+    required TextEditingController controller,
+    required String hint,
+    required Color textColor,
+    required Color fillColor,
+    bool readOnly = false,
+    bool obscureText = false,
+    Widget? suffixIcon,
+    void Function(String)? onSubmitted,
+    void Function()? onTap,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+        ),
+        const SizedBox(height: 10),
+        TextField(
+          controller: controller,
+          readOnly: readOnly,
+          obscureText: obscureText,
+          onSubmitted: onSubmitted,
+          onTap: onTap,
+          style: TextStyle(color: textColor),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            hintText: hint,
+            hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
+            suffixIcon: suffixIcon,
+            filled: true,
+            fillColor: fillColor,
+          ),
+        ),
+      ],
     );
   }
 }

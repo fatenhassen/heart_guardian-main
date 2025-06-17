@@ -6,9 +6,9 @@ import 'package:heart_guardian/widgets/custom_navigation_bar.dart';
 import 'package:heart_guardian/widgets/home_screen_content.dart';
 
 class HomeView extends StatefulWidget {
-  final int userId; // ✅ استلام userId
+  final int userId;
 
-   HomeView({super.key, required this.userId}); // ✅ تمرير userId
+  const HomeView({super.key, required this.userId});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -17,13 +17,19 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   int _pageIndex = 0;
 
-  final List<Widget> _widgetOptions = const [HomeScreenContent(), HeartView()];
+  final List<Widget> _widgetOptions = const [
+    HomeScreenContent(),
+    HeartView(),
+  ];
 
   void _onNavigationItemTapped(int index) async {
     if (index == 2) {
       final result = await Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+        MaterialPageRoute(
+          builder: (context) =>
+              ProfileScreen(userId: widget.userId.toString()),
+        ),
       );
 
       if (!mounted) return;

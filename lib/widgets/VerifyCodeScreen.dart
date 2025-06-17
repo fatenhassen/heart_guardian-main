@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-
-import 'package:heart_guardian/widgets/forget_password.dart';
+import 'package:heart_guardian/widgets/NewPasswordScreen.dart';
+import 'package:http/http.dart' as http;
 
 class VerifyCodeScreen extends StatefulWidget {
   const VerifyCodeScreen({super.key});
@@ -15,18 +16,49 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
     (_) => TextEditingController(),
   );
 
-  void _verifyCode() {
+  Future<void> _verifyCode() async {
     String enteredCode = _controllers.map((c) => c.text).join();
 
-    if (enteredCode.length == 4) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ForgetPasswordScreen()),
-      );
-    } else {
+    if (enteredCode.length != 4) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter the 4-digit code")),
       );
+      return;
+    }
+
+    final url = Uri.parse(
+      'https://web-production-6fe6.up.railway.app/api/v1/password/verify-reset-code',
+    );
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'resetCode': enteredCode}),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final token = responseData['token'];
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) =>
+                    ResetPassword(resetCode: enteredCode, token: token),
+          ),
+        );
+      } else {
+        final responseData = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData['message'] ?? 'Invalid code')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("An error occurred")));
     }
   }
 
@@ -115,7 +147,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
               child: ElevatedButton(
                 onPressed: _verifyCode,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF042D46),
+                  backgroundColor: const Color(0xFF042D46),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
