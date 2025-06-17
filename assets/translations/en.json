@@ -78,7 +78,12 @@
   "dont_have_account": "Don't have an account? Sign up",
   "login_success": "You have logged in successfully.",
   "login_failed": "Login failed",
-  "error_connecting": "Error connecting to server"
+  "error_connecting": "Error connecting to server",
+ 
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female"
+
   
 
 

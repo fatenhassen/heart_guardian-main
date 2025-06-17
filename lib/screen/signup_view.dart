@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:heart_guardian/screen/home_view.dart';
 import 'package:http/http.dart' as http;
 import 'package:easy_localization/easy_localization.dart';
+import 'package:intl/intl.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -23,14 +24,29 @@ class _SignUpViewState extends State<SignUpView> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  DateTime? _selectedDate;
+  String? _selectedGender;
+
   Future<void> _signUp() async {
     final String fullName = _fullNameController.text.trim();
     final String email = _emailController.text.trim();
     final String password = _passwordController.text.trim();
     final String confirmPassword = _confirmPasswordController.text.trim();
+    final String? birthdate = _selectedDate?.toIso8601String();
+    final String? gender = _selectedGender;
 
     if (password != confirmPassword) {
       _showCustomDialog(tr("passwords_not_match"), false);
+      return;
+    }
+
+    if (birthdate == null) {
+      _showCustomDialog(tr("birthdate_required"), false);
+      return;
+    }
+
+    if (gender == null) {
+      _showCustomDialog(tr("gender_required"), false);
       return;
     }
 
@@ -44,6 +60,8 @@ class _SignUpViewState extends State<SignUpView> {
           'full_name': fullName,
           'email': email,
           'password': password,
+          'birthdate': birthdate,
+          'gender': gender,
         }),
       );
 
@@ -167,6 +185,64 @@ class _SignUpViewState extends State<SignUpView> {
                             decoration: InputDecoration(
                               labelText: tr("full_name"),
                               prefixIcon: const Icon(Icons.person),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            readOnly: true,
+                            controller: TextEditingController(
+                              text:
+                                  _selectedDate == null
+                                      ? ''
+                                      : DateFormat.yMMMd(
+                                        context.locale.languageCode,
+                                      ).format(_selectedDate!),
+                            ),
+                            onTap: () async {
+                              final pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime(2000),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime.now(),
+                              );
+                              if (pickedDate != null) {
+                                setState(() {
+                                  _selectedDate = pickedDate;
+                                });
+                              }
+                            },
+                            decoration: InputDecoration(
+                              labelText: tr("select_birthdate"),
+                              prefixIcon: const Icon(Icons.calendar_today),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          DropdownButtonFormField<String>(
+                            value: _selectedGender,
+                            items: [
+                              DropdownMenuItem(
+                                value: 'male',
+                                child: Text(tr("male")),
+                              ),
+                              DropdownMenuItem(
+                                value: 'female',
+                                child: Text(tr("female")),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedGender = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              labelText: tr("gender"),
+                              prefixIcon: const Icon(Icons.transgender),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),

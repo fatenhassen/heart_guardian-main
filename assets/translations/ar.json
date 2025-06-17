@@ -77,7 +77,14 @@
   "dont_have_account": "ليس لديك حساب؟ أنشئ حساباً",
   "login_success": "تم تسجيل الدخول بنجاح.",
   "login_failed": "فشل تسجيل الدخول",
-  "error_connecting": "حدث خطأ في الاتصال بالخادم"
+  "error_connecting": "حدث خطأ في الاتصال بالخادم",
+  "select_birthdate": "اختر تاريخ الميلاد",
+"birthdate_required": "يرجى اختيار تاريخ الميلاد",
+  "gender": "النوع",
+  "male": "ذكر",
+  "female": "أنثى"
+
+
 }
 
 

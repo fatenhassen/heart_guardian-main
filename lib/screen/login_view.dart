@@ -5,7 +5,6 @@ import 'package:heart_guardian/widgets/forget_password.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 import 'home_view.dart';
 import 'signup_view.dart';
 

@@ -1,7 +1,42 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class ForgetPasswordScreen extends StatelessWidget {
+class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
+
+  @override
+  State<ForgetPasswordScreen> createState() => _ForgetPasswordScreenState();
+}
+
+class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
+  final TextEditingController _emailController = TextEditingController();
+
+  Future<void> sendResetEmail(String email) async {
+    final url = Uri.parse('https://your-backend-url.com/forgot-password'); // ✅ غيّري الرابط حسب الـ API بتاعتك
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Reset link has been sent to your email")),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to send reset link")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("An error occurred")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +77,7 @@ class ForgetPasswordScreen extends StatelessWidget {
               ),
               const SizedBox(height: 25),
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(
                     Icons.email_outlined,
@@ -50,7 +86,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                   ),
                   hintText: 'Email address',
                   filled: true,
-                  fillColor: Color(0xFFA0D1EF),
+                  fillColor: const Color(0xFFA0D1EF),
                   hintStyle: const TextStyle(
                     fontFamily: 'Agbalumo',
                     fontSize: 18,
@@ -63,7 +99,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
+                    borderSide: const BorderSide(
                       color: Color(0xFF042D46),
                       width: 3.5,
                     ),
@@ -81,22 +117,25 @@ class ForgetPasswordScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF042D46),
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: const Color(0xFF042D46),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 9,
                   ),
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Reset link has been sent to your email"),
-                      ),
-                    );
+                    final email = _emailController.text.trim();
+                    if (email.isNotEmpty) {
+                      sendResetEmail(email);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please enter your email")),
+                      );
+                    }
                   },
                   child: const Text(
-                    'Send  Email',
+                    'Send Email',
                     style: TextStyle(
                       fontFamily: 'Agbalumo',
                       fontWeight: FontWeight.bold,
