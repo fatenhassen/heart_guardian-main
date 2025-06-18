@@ -38,6 +38,22 @@ class _LoginViewState extends State<LoginView> {
         final int userId = responseData['user_id'];
         await prefs.setInt('user_id', userId);
 
+        // ✅ جلب البيانات من الرد إذا كانت موجودة
+        final fullName = responseData['full_name'];
+        final birthdate = responseData['birthdate'];
+
+        // ✅ إرسال البيانات إلى البروفايل مباشرة
+        if (fullName != null && birthdate != null) {
+          final profileUrl = Uri.parse(
+            'https://web-production-6fe6.up.railway.app/profile/$userId',
+          );
+          await http.put(
+            profileUrl,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'full_name': fullName, 'birthdate': birthdate}),
+          );
+        }
+
         if (!mounted) return;
 
         showDialog(

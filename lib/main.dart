@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:heart_guardian/screen/home_view.dart';
-import 'package:heart_guardian/widgets/NewPasswordScreen.dart';
 import 'package:heart_guardian/widgets/VerifyCodeScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';

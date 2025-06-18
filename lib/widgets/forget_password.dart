@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:heart_guardian/widgets/VerifyCodeScreen.dart';
+// تأكدي أن هذا المسار صحيح
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -13,8 +13,22 @@ class ForgetPasswordScreen extends StatefulWidget {
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
+  bool _isLoading = false;
 
-  Future<void> sendResetEmail(String email) async {
+  Future<void> _sendResetEmail() async {
+    final email = _emailController.text.trim();
+
+    if (email.isEmpty || !email.contains('@')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter a valid email address")),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
     final url = Uri.parse(
       'https://web-production-6fe6.up.railway.app/api/v1/password/forgot',
     );
@@ -26,46 +40,40 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
         body: jsonEncode({'email': email}),
       );
 
-      if (!mounted) return;
-
+      final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Reset code has been sent to your email"),
+          SnackBar(
+            content: Text(data['message'] ?? 'Reset link sent successfully.'),
+            backgroundColor: Colors.green,
           ),
         );
 
-        await openEmailApp(); // ✅ فتح الإيميل مباشرة بعد الإرسال
-
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const VerifyCodeScreen()),
+          MaterialPageRoute(
+            builder: (context) => VerifyCodeScreen(email: email),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Failed to send reset code")),
+          SnackBar(
+            content: Text(data['message'] ?? 'Something went wrong.'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("An error occurred")));
-    }
-  }
-
-  Future<void> openEmailApp() async {
-    final Uri gmailUri = Uri.parse("googlegmail://");
-    final Uri mailtoUri = Uri(scheme: 'mailto');
-
-    if (await canLaunchUrl(gmailUri)) {
-      await launchUrl(gmailUri);
-    } else if (await canLaunchUrl(mailtoUri)) {
-      await launchUrl(mailtoUri);
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("No email app found")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error sending request. Please try again later.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -97,7 +105,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             children: [
               const SizedBox(height: 25),
               const Text(
-                'Enter your email address to receive a password reset code',
+                'Enter your email address to receive a password reset link',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Agbalumo',
@@ -155,40 +163,19 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     ),
                     elevation: 9,
                   ),
-                  onPressed: () {
-                    final email = _emailController.text.trim();
-                    if (email.isNotEmpty) {
-                      sendResetEmail(email);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Please enter your email"),
-                        ),
-                      );
-                    }
-                  },
-                  child: const Text(
-                    'Send Email',
-                    style: TextStyle(
-                      fontFamily: 'Agbalumo',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextButton.icon(
-                onPressed: openEmailApp,
-                icon: const Icon(Icons.mail_outline, color: Color(0xFF042D46)),
-                label: const Text(
-                  "Open Email App",
-                  style: TextStyle(
-                    color: Color(0xFF042D46),
-                    fontFamily: 'Agbalumo',
-                    fontSize: 18,
-                  ),
+                  onPressed: _isLoading ? null : _sendResetEmail,
+                  child:
+                      _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                            'Send Email',
+                            style: TextStyle(
+                              fontFamily: 'Agbalumo',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              color: Colors.white,
+                            ),
+                          ),
                 ),
               ),
             ],
