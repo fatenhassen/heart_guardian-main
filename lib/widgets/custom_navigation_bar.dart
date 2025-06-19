@@ -16,8 +16,6 @@ class CustomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-
-    // تحديد الألوان حسب الثيم
     final navBarColor = isDark ? Color(0xFF042D46) : const Color(0xFF6BAED6);
     final buttonColor = isDark ? Color(0xFF042D46) : const Color(0xFF045C8C);
     final iconColor = Colors.white;

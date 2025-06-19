@@ -8,10 +8,8 @@ class ArticleListWidget extends StatelessWidget {
 
   const ArticleListWidget({super.key, required this.articles});
 
-  // دالة لتعديل رابط يوتيوب عشان يكون صالح للفتح
   String fixYouTubeUrl(String url) {
     if (url.contains("youtube.com/embed/")) {
-      // نحول رابط embed إلى رابط مشاهدة عادي
       final videoId = url.split('/embed/').last;
       return 'https://www.youtube.com/watch?v=$videoId';
     }
@@ -80,7 +78,7 @@ class ArticleListWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // العنوان
+                     
                       Text(
                         article.title,
                         style: const TextStyle(
@@ -91,7 +89,7 @@ class ArticleListWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 0.5),
 
-                      // الوصف
+                      
                       Text(
                         article.description,
                         style: GoogleFonts.agbalumo(
@@ -132,8 +130,7 @@ class ArticleListWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-
-                      // روابط Click Here
+ 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

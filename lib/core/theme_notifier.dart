@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_theme.dart'; // تأكد إن الملف اللي فيه الثيم اسمه كده
+import 'app_theme.dart'; 
 
 class ThemeNotifier extends ChangeNotifier {
   bool _isDarkMode = false;

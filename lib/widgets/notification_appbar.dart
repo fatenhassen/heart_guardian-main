@@ -20,7 +20,7 @@ class NotificationAppBar extends StatelessWidget
       ),
       titleSpacing: 100,
       title: Text(
-        'notification'.tr(), // ✅ تم تفعيل الترجمة هنا
+        'notification'.tr(),  
         style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20,

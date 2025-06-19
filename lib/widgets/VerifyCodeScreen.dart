@@ -53,7 +53,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        // تم التعديل هنا: "resetCode" أصبح "code" ليتوافق مع الباك-اند
+
         body: jsonEncode({"email": widget.email, "code": enteredCode}),
       );
 
@@ -64,8 +64,6 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
           SnackBar(content: Text(data['message'] ?? "Code verified")),
         );
 
-        // تم التعديل هنا: تمرير resetToken إلى شاشة ResetPassword
-        // تأكدي أن الباك-اند يرسل 'resetToken' في حالة النجاح
         final String resetToken = data['resetToken'];
 
         Navigator.push(

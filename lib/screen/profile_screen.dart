@@ -238,7 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildLabeledField(
                 label: 'full_name'.tr(),
                 controller: fullNameController,
-                hint: 'Alaa Elashmawi',
+                hint: 'project team',
                 textColor: textColor,
                 fillColor: fillColor,
                 onSubmitted: (_) => _updateFullName(),
@@ -252,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _buildLabeledField(
                 label: 'email'.tr(),
                 controller: emailController,
-                hint: 'alaa@gmail.com',
+                hint: 'project123@gmail.com',
                 textColor: textColor,
                 fillColor: fillColor,
                 readOnly: true,

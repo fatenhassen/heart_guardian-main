@@ -18,7 +18,6 @@ class SettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final iconColor = theme.iconTheme.color ?? const Color(0xFF042D46);
-    // هنا غيرنا bodyText1 لـ bodyLarge
     final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
 
     return InkWell(

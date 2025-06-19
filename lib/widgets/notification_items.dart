@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart'; // تأكد من استيراد easy_localization
+import 'package:easy_localization/easy_localization.dart'; 
 
 class NotificationItem extends StatelessWidget {
   final IconData icon;
-  final String title; // مفتاح الترجمة
-  final String subtitle; // مفتاح الترجمة
+  final String title; 
+  final String subtitle; 
   final String time;
 
   const NotificationItem({
@@ -60,7 +60,7 @@ class NotificationItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title.tr(), // ✅ استخدم الترجمة
+                      title.tr(), 
                       style: TextStyle(
                         fontFamily: 'Agbalumo',
                         fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class NotificationItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4.0),
                     Text(
-                      subtitle.tr(), // ✅ استخدم الترجمة
+                      subtitle.tr(), 
                       style: TextStyle(
                         color:
                             isDark ? Colors.grey[400] : const Color(0XFF918C8C),

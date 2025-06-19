@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class UserService {
   static const String baseUrl = 'https://web-production-6fe6.up.railway.app';
 
-  // جلب بيانات المستخدم
+
   static Future<Map<String, dynamic>?> getUserProfile(String userId) async {
     final url = Uri.parse('$baseUrl/profile/$userId');
     try {
@@ -21,7 +21,7 @@ class UserService {
     }
   }
 
-  // تحديث بيانات المستخدم
+  
   static Future<bool> updateUserProfile(
     String userId,
     Map<String, dynamic> data,

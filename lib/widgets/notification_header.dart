@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart'; // مهم: تأكد من استيراد easy_localization
-
+import 'package:easy_localization/easy_localization.dart';  
 class NotificationHeader extends StatelessWidget {
   const NotificationHeader({super.key});
 
@@ -15,7 +14,7 @@ class NotificationHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'today'.tr(), // ✅ نص مترجم
+            'today'.tr(),  
             style: TextStyle(
               color: isDark ? Colors.blue[200] : const Color(0xFFA0D1EF),
               fontSize: 18.0,
@@ -24,7 +23,7 @@ class NotificationHeader extends StatelessWidget {
             ),
           ),
           Text(
-            'mark_all_read'.tr(), // ✅ نص مترجم
+            'mark_all_read'.tr(),  
             style: TextStyle(
               color: isDark ? Colors.blue[200] : const Color(0xFFA0D1EF),
               fontSize: 18.0,

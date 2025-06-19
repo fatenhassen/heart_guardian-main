@@ -13,7 +13,7 @@ class SettingsCard extends StatelessWidget {
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: theme.cardColor,  // لون الخلفية حسب الثيم
+      color: theme.cardColor,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(children: children),
