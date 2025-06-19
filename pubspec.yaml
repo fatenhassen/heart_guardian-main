@@ -49,13 +49,12 @@ dependencies:
   shared_preferences: ^2.5.3
   firebase_auth: ^5.5.4
   fl_chart: ^0.66.0
-  flutter_local_notifications: ^16.3.1
+  flutter_local_notifications: ^19.0.0
   
   
-
 dev_dependencies:
   flutter_test:
-    sdk: flutter
+   sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

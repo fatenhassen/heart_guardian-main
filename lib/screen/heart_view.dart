@@ -4,8 +4,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:heart_guardian/widgets/animated_title.dart';
 import 'package:heart_guardian/widgets/custum_line_chart.dart';
 
-import 'package:heart_guardian/main.dart';
-
 class HeartView extends StatefulWidget {
   const HeartView({super.key});
 
@@ -16,6 +14,9 @@ class HeartView extends StatefulWidget {
 class _HeartViewState extends State<HeartView>
     with SingleTickerProviderStateMixin {
   final _database = FirebaseDatabase.instance.ref();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   List<double> heartRates = [];
   List<double> spo2Levels = [];
   List<String> timeLabels = [];
@@ -24,9 +25,12 @@ class _HeartViewState extends State<HeartView>
   late Animation<double> _heartAnimation;
   late Animation<double> _oxygenAnimation;
 
+  bool hasNotified = false;
+
   @override
   void initState() {
     super.initState();
+    initNotifications();
     listenToLiveData();
 
     _controller = AnimationController(
@@ -45,105 +49,101 @@ class _HeartViewState extends State<HeartView>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Future<void> initNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> showAlertNotification(double bpm) async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'alert_channel',
+          'Health Alerts',
+          channelDescription: 'Notifications for abnormal heart readings',
+          importance: Importance.max,
+          priority: Priority.high,
+        );
+    const NotificationDetails platformDetails = NotificationDetails(
+      android: androidDetails,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      '⚠️ Heart Rate Alert',
+      'Child heart rate is $bpm bpm. Please check immediately!',
+      platformDetails,
+    );
   }
 
   void listenToLiveData() {
     _database.child('sensorData').onValue.listen((event) {
       final data = event.snapshot.value as Map?;
       if (data != null) {
-        final bpmRaw = data['BPM'];
-        final spo2Raw = data['SpO2'];
+        final bpm = (data['bpm'] ?? 0).toDouble();
+        final spo2 = (data['spo2'] ?? 0).toDouble();
 
-        if (bpmRaw != null && spo2Raw != null) {
-          final bpm = double.tryParse(bpmRaw.toString()) ?? 0.0;
-          final spo2 = double.tryParse(spo2Raw.toString()) ?? 0.0;
+        final now = DateTime.now();
+        final formattedTime =
+            "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
 
-          final now = DateTime.now();
-          final formattedTime =
-              "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
+        setState(() {
+          heartRates.add(bpm);
+          spo2Levels.add(spo2);
+          timeLabels.add(formattedTime);
 
-          setState(() {
-            heartRates.add(bpm);
-            spo2Levels.add(spo2);
-            timeLabels.add(formattedTime);
-
-            if (heartRates.length > 20) {
-              heartRates.removeAt(0);
-              timeLabels.removeAt(0);
-            }
-            if (spo2Levels.length > 20) {
-              spo2Levels.removeAt(0);
-            }
-          });
-
-          if (bpm < 80 || bpm > 130) {
-            sendHeartRateAlert(bpm);
+          if (heartRates.length > 20) {
+            heartRates.removeAt(0);
+            timeLabels.removeAt(0);
           }
+          if (spo2Levels.length > 20) {
+            spo2Levels.removeAt(0);
+          }
+        });
+
+        // 🚨 Alert logic
+        if ((bpm < 65 || bpm > 120) && !hasNotified) {
+          hasNotified = true;
+          showAlertNotification(bpm);
+
+          // Allow alert again after 1 minute
+          Future.delayed(const Duration(minutes: 1), () {
+            hasNotified = false;
+          });
         }
       }
     });
   }
 
-  void sendHeartRateAlert(double bpm) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-          'heart_alerts', // channel ID
-          'Heart Rate Alerts', // channel name
-          importance: Importance.max,
-          priority: Priority.high,
-          ticker: 'ticker',
-        );
-
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      '⚠️ Heart Rate Alert',
-      'Child’s heart rate is abnormal: $bpm BPM',
-      platformChannelSpecifics,
-    );
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    bool dataReady =
-        heartRates.isNotEmpty && spo2Levels.isNotEmpty && timeLabels.isNotEmpty;
-
     return SingleChildScrollView(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 200),
       child: Column(
         children: [
           AnimatedTitle(text: '🫀 Heart Rate 🫀', animation: _heartAnimation),
-          dataReady
-              ? CustomLineChart(
-                data: heartRates,
-                lineColor: Colors.redAccent,
-                timeLabels: timeLabels,
-              )
-              : const Padding(
-                padding: EdgeInsets.all(16),
-                child: CircularProgressIndicator(),
-              ),
+          CustomLineChart(
+            data: heartRates,
+            lineColor: Colors.redAccent,
+            timeLabels: timeLabels,
+          ),
           const SizedBox(height: 16),
           AnimatedTitle(text: '🌬️ Oxygen 🌬️', animation: _oxygenAnimation),
-          dataReady
-              ? CustomLineChart(
-                data: spo2Levels,
-                lineColor: Colors.blue,
-                timeLabels: timeLabels,
-              )
-              : const Padding(
-                padding: EdgeInsets.all(16),
-                child: CircularProgressIndicator(),
-              ),
+          CustomLineChart(
+            data: spo2Levels,
+            lineColor: Colors.blue,
+            timeLabels: timeLabels,
+          ),
           const SizedBox(height: 30),
-          const Text(
+          Text(
             'Your heart rate and oxygen is updated live while using the sensor',
             textAlign: TextAlign.center,
             style: TextStyle(

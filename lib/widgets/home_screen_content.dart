@@ -9,10 +9,10 @@ class HomeScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DatabaseReference bpmRef = FirebaseDatabase.instance.ref(
-      "sensorData/BPM",
+      "sensorData/bpm",
     );
     final DatabaseReference spo2Ref = FirebaseDatabase.instance.ref(
-      "sensorData/SpO2",
+      "sensorData/spo2",
     );
 
     return ScrollConfiguration(
