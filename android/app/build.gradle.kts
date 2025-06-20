@@ -1,8 +1,9 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") // Firebase plugin
 }
 
 android {
@@ -13,7 +14,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-        isCoreLibraryDesugaringEnabled = true 
+        isCoreLibraryDesugaringEnabled = true
+
     }
 
     kotlinOptions {
@@ -30,6 +32,8 @@ android {
 
     buildTypes {
         release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -40,8 +44,7 @@ flutter {
 }
 
 apply(plugin = "com.google.gms.google-services")
-
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
- 
+   coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5") 
+
 }

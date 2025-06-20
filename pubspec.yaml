@@ -40,21 +40,20 @@ dependencies:
   flutter_svg: ^2.1.0
   http: ^1.4.0
   firebase_database: ^11.3.6
-  url_launcher: ^6.1.10
+  url_launcher: ^6.3.1
   google_fonts: ^6.2.1
   provider: ^6.1.5
-  intl: ^0.20.2
   easy_localization: ^3.0.7+1
   image_picker: ^1.1.2
   shared_preferences: ^2.5.3
   firebase_auth: ^5.5.4
-  fl_chart: ^0.66.0
-  flutter_local_notifications: ^19.0.0
-  
-  
+  fl_chart: ^1.0.0
+  webview_flutter: ^4.13.0
+  flutter_local_notifications: ^19.2.1
+
 dev_dependencies:
   flutter_test:
-   sdk: flutter
+    sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

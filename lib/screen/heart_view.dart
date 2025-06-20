@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:heart_guardian/widgets/animated_title.dart';
 import 'package:heart_guardian/widgets/custum_line_chart.dart';
 
@@ -14,9 +13,6 @@ class HeartView extends StatefulWidget {
 class _HeartViewState extends State<HeartView>
     with SingleTickerProviderStateMixin {
   final _database = FirebaseDatabase.instance.ref();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-
   List<double> heartRates = [];
   List<double> spo2Levels = [];
   List<String> timeLabels = [];
@@ -25,12 +21,9 @@ class _HeartViewState extends State<HeartView>
   late Animation<double> _heartAnimation;
   late Animation<double> _oxygenAnimation;
 
-  bool hasNotified = false;
-
   @override
   void initState() {
     super.initState();
-    initNotifications();
     listenToLiveData();
 
     _controller = AnimationController(
@@ -49,33 +42,10 @@ class _HeartViewState extends State<HeartView>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
-  Future<void> initNotifications() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  Future<void> showAlertNotification(double bpm) async {
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-          'alert_channel',
-          'Health Alerts',
-          channelDescription: 'Notifications for abnormal heart readings',
-          importance: Importance.max,
-          priority: Priority.high,
-        );
-    const NotificationDetails platformDetails = NotificationDetails(
-      android: androidDetails,
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      '⚠️ Heart Rate Alert',
-      'Child heart rate is $bpm bpm. Please check immediately!',
-      platformDetails,
-    );
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   void listenToLiveData() {
@@ -102,25 +72,8 @@ class _HeartViewState extends State<HeartView>
             spo2Levels.removeAt(0);
           }
         });
-
-        // 🚨 Alert logic
-        if ((bpm < 65 || bpm > 120) && !hasNotified) {
-          hasNotified = true;
-          showAlertNotification(bpm);
-
-          // Allow alert again after 1 minute
-          Future.delayed(const Duration(minutes: 1), () {
-            hasNotified = false;
-          });
-        }
       }
     });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
