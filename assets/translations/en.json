@@ -22,7 +22,6 @@
   "empty_full_name_error": "Full name cannot be empty",
   "profile_update_success": "Profile updated successfully!",
   "profile_update_error": "An error occurred while updating the profile. Please try again.",
-  
   "check_on_child": "Check on Child",
   "check_on_child_msg": "Attention, mom, time to check on your child.",
   "open_camera": "Open Camera",
@@ -40,14 +39,12 @@
   "your_rights": "Your rights:",
   "rights_description": "You can request access to your data.\nYou can request deletion of your account and all related data.\nYou can opt out of notifications or tracking features.",
   "contact_us": "For more information, contact us through the Help & Support section.",
-  
   "need_assistance": "Need Assistance?",
   "contact_instruction": "If you have any questions or need help using the app, feel free to contact us through the following methods:",
   "faq_contact": "You can access the FAQ section or contact us directly. Our team will get back to you as soon as possible.",
    "home": "Home",
   "heart": "Heart",
   "profile": "Profile",
-   
   "switch_to_light_mode": "Switch to light mode",
   "switch_to_dark_mode": "Switch to dark mode",
   "home_title": "Home",
@@ -57,13 +54,10 @@
   "blogs": "Blogs",
    "welcome_back": "Welcome Back",
   "sign_in": "Sign In",
-  
   "login_social_media": "Login with Social Media",
   "google_login_failed": "Failed to sign in with Google",
   "create_account": "Create Account",
-  
   "email_or_phone": "Phone or Email",
-  
   "confirm_password": "Confirm Password",
   "sign_up": "SIGN UP",
   "already_have_account": "Already have an account? Sign in",
@@ -72,19 +66,12 @@
   "signup_failed": "Signup failed",
   "something_wrong": "Something went wrong. Try again later.",
   "welcome_text": "Hello\nSign in!",
-  
   "forgot_password": "Forgot password?",
-  
   "dont_have_account": "Don't have an account? Sign up",
   "login_success": "You have logged in successfully.",
   "login_failed": "Login failed",
   "error_connecting": "Error connecting to server",
- 
   "gender": "Gender",
   "male": "Male",
   "female": "Female"
-
-  
-
-
 }

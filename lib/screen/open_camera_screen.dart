@@ -49,9 +49,7 @@ class _OpenCameraScreenState extends State<OpenCameraScreen> {
           _imageBytes = response.bodyBytes;
         });
       }
-    } catch (e) {
-      // تجاهل الخطأ
-    }
+    } catch (e) {}
   }
 
   @override
