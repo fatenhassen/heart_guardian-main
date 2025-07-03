@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:heart_guardian/screen/home_view.dart';
+import 'package:heart_guardian/screen/profile_screen.dart';
 import 'package:heart_guardian/services/heart_monitor_service.dart';
 import 'package:heart_guardian/services/notifiction_service.dart';
 import 'package:heart_guardian/widgets/VerifyCodeScreen.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
           routes: {
             '/privacy': (context) => const PrivacyScreen(),
             '/help': (context) => const HelpSupportScreen(),
+            '/account':(context) => const ProfileScreen(userId: '123',), 
           },
         );
       },

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:easy_localization/easy_localization.dart'; // ✅ دعم الترجمة
 
 class CustomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -16,29 +15,19 @@ class CustomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final navBarColor = isDark ? Color(0xFF042D46) : const Color(0xFF6BAED6);
-    final buttonColor = isDark ? Color(0xFF042D46) : const Color(0xFF045C8C);
-    final iconColor = Colors.white;
 
     return CurvedNavigationBar(
       index: currentIndex,
       height: 75.0,
-      items: [
-        Tooltip(
-          message: tr('home'),
-          child: Icon(Icons.home_outlined, size: 30, color: iconColor),
-        ),
-        Tooltip(
-          message: tr('heart'),
-          child: Icon(Icons.monitor_heart, size: 30, color: iconColor),
-        ),
-        Tooltip(
-          message: tr('profile'),
-          child: Icon(Icons.person, size: 30, color: iconColor),
-        ),
+      items: const <Widget>[
+        Icon(Icons.home_outlined, size: 35, color: Colors.white),
+        Icon(Icons.monitor_heart, size: 35, color: Colors.white),
+        Icon(Icons.videocam_outlined, size: 35, color: Colors.white),
+        Icon(Icons.person, size: 35, color: Colors.white),
       ],
-      color: navBarColor,
-      buttonBackgroundColor: buttonColor,
+      color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFF6C9FBB),
+      buttonBackgroundColor:
+          isDark ? const Color(0xFF444444) : const Color(0xFF042D46),
       backgroundColor: Colors.transparent,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 600),

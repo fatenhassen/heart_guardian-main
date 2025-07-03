@@ -15,6 +15,28 @@ class CustomLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (data.isEmpty) {
+      return const Center(
+        child: Text(
+          'No data available to display chart.',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      );
+    }
+
+    if (timeLabels.length < data.length) {
+      return const Center(
+        child: Text(
+          'Time labels do not match data length.',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.red,
+          ),
+        ),
+      );
+    }
+
     List<FlSpot> spots = [];
     for (int i = 0; i < data.length; i++) {
       spots.add(FlSpot(i.toDouble(), data[i]));
